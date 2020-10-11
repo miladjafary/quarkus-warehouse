@@ -11,14 +11,9 @@ import javax.ws.rs.core.MediaType;
 @Path("/resteasy/hello")
 public class ExampleResource {
 
-    @Inject
-    ProductService productService;
-
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-
-        productService.save();
         return "hello";
     }
 }

@@ -39,10 +39,7 @@ class ArticleServiceTest {
     public void testSuccessCreateArticle() {
         ServiceResponseDto actualResponse = articleService.save(articleBuilder.build());
 
-        assertThat(actualResponse, is(notNullValue()));
-        assertThat(actualResponse.getStatus(), equalTo(Response.Status.OK));
-        assertThat(actualResponse.getEntity(), equalTo("Created"));
-        assertThat(actualResponse.getErrors().isEmpty(), is(true));
+        assertSuccessCreateResponse(actualResponse);
 
         Article actualArticle = articleService.findById(VALID_ARTICLE_ID);
 

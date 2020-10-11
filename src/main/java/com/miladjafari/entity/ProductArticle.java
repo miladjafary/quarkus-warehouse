@@ -82,7 +82,7 @@ public class ProductArticle {
             return this;
         }
 
-        public Builder inventory(Article article) {
+        public Builder article(Article article) {
             instance.article = article;
             return this;
         }

@@ -1,6 +1,5 @@
 package com.miladjafari.service;
 
-import com.miladjafari.dto.ArticleDto;
 import com.miladjafari.dto.ValidationErrorDto;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,18 +11,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class ArticleValidator {
+public class CommonValidator {
 
     @Inject
     Validator validator;
 
-    public List<ValidationErrorDto> validate(ArticleDto articleDto) {
-        List<ValidationErrorDto> errors = validateFormat(articleDto);
-        return errors;
-    }
-
-    public <T> List<ValidationErrorDto> validateFormat(T stockUpdateRequestDto) {
-        Set<ConstraintViolation<T>> validations = validator.validate(stockUpdateRequestDto);
+    public <T> List<ValidationErrorDto> validateFormat(T object) {
+        Set<ConstraintViolation<T>> validations = validator.validate(object);
         return validations.stream()
                 .map(cv -> ValidationErrorDto.builder().constraintViolation(cv).build())
                 .collect(Collectors.toList());

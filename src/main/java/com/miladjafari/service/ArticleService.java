@@ -18,7 +18,7 @@ public class ArticleService {
     ArticleRepository articleRepository;
 
     @Inject
-    ArticleValidator articleValidator;
+    CommonValidator commonValidator;
 
     public Article findById(Long id) {
         return articleRepository.findById(id);
@@ -28,7 +28,7 @@ public class ArticleService {
     public ServiceResponseDto save(ArticleDto articleDto) {
         ServiceResponseDto.Builder responseBuilder = ServiceResponseDto.builder();
 
-        List<ValidationErrorDto> validationErrors = articleValidator.validate(articleDto);
+        List<ValidationErrorDto> validationErrors = commonValidator.validateFormat(articleDto);
         if (validationErrors.isEmpty()) {
             String result = createOrUpdate(articleDto);
             responseBuilder.ok(result);
