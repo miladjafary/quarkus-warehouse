@@ -3,6 +3,7 @@ package com.miladjafari.dto;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 public class ArticleDto {
 
@@ -17,10 +18,6 @@ public class ArticleDto {
     @NotBlank(message = "stock is required")
     @Pattern(regexp = "[0-9]+", message = "stock must be only digits")
     private String stock;
-
-    public static Builder builder() {
-        return new Builder();
-    }
 
     public String getId() {
         return id;
@@ -44,6 +41,25 @@ public class ArticleDto {
 
     public void setStock(String stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ArticleDto that = (ArticleDto) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(stock, that.stock);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, stock);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
