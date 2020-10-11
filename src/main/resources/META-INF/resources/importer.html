@@ -61,13 +61,13 @@
 
         .left-column {
             padding: .75rem;
-            max-width: 75%;
-            min-width: 55%;
+            max-width: 50%;
+            min-width: 50%;
         }
 
         .right-column {
             padding: .75rem;
-            max-width: 25%;
+            max-width: 50%;
         }
 
         .container {
@@ -100,24 +100,33 @@
 <body>
 
 <div class="banner lead">
-    Warehouse
+    <div>Warehouse Importer</div>
 </div>
 
 <div class="container">
+    <div><a href="index.html"> home</a></div>
     <div class="left-column">
-        <p class="lead"> Choose a file to import articles to Inventory</p>
         <h2>Import Inventory</h2>
+        <p class="lead"> Choose a file to import articles to Inventory</p>
         <form action="/importer/inventory" method="post" enctype="multipart/form-data">
             <p>
                 Select a file : <input type="file" name="file" size="45" />
             </p>
-            <input type="submit" value="Upload File" />
+            <input type="submit" value="Upload Inventory File" />
         </form>
     </div>
+
     <div class="right-column">
-        <div class="right-section">
-        </div>
+        <h2>Import Products</h2>
+        <p class="lead">Choose a file to import products</p>
+        <form action="/importer/products" method="post" enctype="multipart/form-data">
+            <p>
+                Select a file : <input type="file" name="file" size="45" />
+            </p>
+            <input type="submit" value="Upload Product File" />
+        </form>
     </div>
+
 </div>
 </body>
 </html>

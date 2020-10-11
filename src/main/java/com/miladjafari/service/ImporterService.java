@@ -1,6 +1,7 @@
 package com.miladjafari.service;
 
 import com.miladjafari.dto.ArticleDto;
+import com.miladjafari.dto.ProductDto;
 import com.miladjafari.dto.ServiceResponseDto;
 import com.miladjafari.dto.ValidationErrorDto;
 
@@ -19,6 +20,9 @@ public class ImporterService {
     @Inject
     ArticleService articleService;
 
+    @Inject
+    ProductService productService;
+
     public ServiceResponseDto importArticles(List<ArticleDto> articles) {
         ServiceResponseDto.Builder serviceResponseBuilder = ServiceResponseDto.builder().ok();
         JsonArrayBuilder articlesJsonResponseBuilder = Json.createArrayBuilder();
@@ -36,6 +40,25 @@ public class ImporterService {
         JsonArray articlesJsonResponse = articlesJsonResponseBuilder.build();
         return serviceResponseBuilder.entity(articlesJsonResponse).build();
     }
+
+    public ServiceResponseDto importProducts(List<ProductDto> products) {
+        ServiceResponseDto.Builder serviceResponseBuilder = ServiceResponseDto.builder().ok();
+        JsonArrayBuilder productsJsonResponseBuilder = Json.createArrayBuilder();
+
+        products.forEach(product -> {
+            ServiceResponseDto serviceResponse = productService.save(product);
+            if (serviceResponse.getStatus().equals(Response.Status.OK)) {
+                productsJsonResponseBuilder.add("Imported");
+            } else {
+                productsJsonResponseBuilder.add(convertJson(serviceResponse.getErrors()));
+                serviceResponseBuilder.badRequest();
+            }
+        });
+
+        JsonArray articlesJsonResponse = productsJsonResponseBuilder.build();
+        return serviceResponseBuilder.entity(articlesJsonResponse).build();
+    }
+
 
     private JsonArrayBuilder convertJson(List<ValidationErrorDto> errors) {
         JsonArrayBuilder jsonErrorsBuilder = Json.createArrayBuilder();

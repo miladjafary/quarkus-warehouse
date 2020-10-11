@@ -2,6 +2,7 @@ package com.miladjafari.ws;
 
 import com.miladjafari.dto.InventoryDto;
 import com.miladjafari.dto.MultipartBody;
+import com.miladjafari.dto.ProductListDto;
 import com.miladjafari.dto.ServiceResponseDto;
 import com.miladjafari.service.ImporterService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
@@ -35,6 +36,19 @@ public class ImporterResource {
 
         InventoryDto inventory = JsonbBuilder.create().fromJson(inventoryJsonData, InventoryDto.class);
         ServiceResponseDto serviceResponse = importerService.importArticles(inventory.getArticles());
+
+        return serviceResponse.getJaxRsResponse();
+    }
+
+    @POST
+    @Path("/products")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response importProducts(@MultipartForm MultipartBody requestBody) {
+        String productsJsonData = toString(requestBody.getFile());
+
+        ProductListDto productListDto = JsonbBuilder.create().fromJson(productsJsonData, ProductListDto.class);
+        ServiceResponseDto serviceResponse = importerService.importProducts(productListDto.getProducts());
 
         return serviceResponse.getJaxRsResponse();
     }
