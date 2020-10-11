@@ -9,6 +9,8 @@ import java.util.Objects;
 
 public class ProductDto {
 
+    private String id;
+
     @NotBlank(message = "name is required")
     private String name;
 
@@ -16,6 +18,18 @@ public class ProductDto {
 
     @JsonbProperty("contain_articles")
     private List<ProductArticleDto> productArticles = new ArrayList<>();
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -46,22 +60,24 @@ public class ProductDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductDto that = (ProductDto) o;
-        return Objects.equals(name, that.name) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(quantity, that.quantity) &&
                 Objects.equals(productArticles, that.productArticles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, quantity, productArticles);
-    }
-
-    public static Builder builder() {
-        return new Builder();
+        return Objects.hash(id, name, quantity, productArticles);
     }
 
     public static class Builder {
         private final ProductDto instance = new ProductDto();
+
+        public Builder id(Long id) {
+            instance.id = id.toString();
+            return this;
+        }
 
         public Builder name(String name) {
             instance.name = name;

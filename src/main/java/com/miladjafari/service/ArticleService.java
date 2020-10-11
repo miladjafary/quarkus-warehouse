@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ArticleService {
@@ -68,5 +69,27 @@ public class ArticleService {
         article.setStock(stock);
 
         articleRepository.persist(article);
+    }
+
+    public List<ArticleDto> findAll() {
+        return articleRepository.listAll()
+                .stream()
+                .map(article -> ArticleDto.builder()
+                        .name(article.getName())
+                        .stock(article.getStock())
+                        .id(article.getId())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    public void reduceStock(Article article, Integer requiredArticle) {
+        Integer inStock = article.getStock();
+
+        int remainInStock = inStock - requiredArticle;
+        if (remainInStock > 0) {
+            article.setStock(remainInStock);
+            articleRepository.persist(article);
+        }
     }
 }
