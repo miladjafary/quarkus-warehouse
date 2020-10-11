@@ -14,7 +14,7 @@ public class ProductDto {
     private String name;
 
     @JsonbProperty("contain_articles")
-    private List<ProductArticle> productArticles = new ArrayList<>();
+    private List<ProductArticleDto> productArticles = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -24,11 +24,11 @@ public class ProductDto {
         this.name = name;
     }
 
-    public List<ProductArticle> getProductArticles() {
+    public List<ProductArticleDto> getProductArticles() {
         return productArticles;
     }
 
-    public void setProductArticles(List<ProductArticle> productArticles) {
+    public void setProductArticles(List<ProductArticleDto> productArticles) {
         this.productArticles = productArticles;
     }
 }
