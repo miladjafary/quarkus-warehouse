@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Product {
@@ -19,10 +20,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<ProductArticle> productArticles = new ArrayList<>();
-
-    public static Builder builder() {
-        return new Builder();
-    }
 
     public Long getId() {
         return id;
@@ -56,11 +53,11 @@ public class Product {
         this.lastUpdate = lastUpdate;
     }
 
-    public List<ProductArticle> getArticles() {
+    public List<ProductArticle> getProductArticles() {
         return productArticles;
     }
 
-    public void setArticles(List<ProductArticle> productArticles) {
+    public void setProductArticles(List<ProductArticle> productArticles) {
         this.productArticles = productArticles;
     }
 
@@ -68,6 +65,27 @@ public class Product {
     @PreUpdate
     public void onPersist() {
         lastUpdate = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id) &&
+                Objects.equals(name, product.name) &&
+                Objects.equals(price, product.price) &&
+                Objects.equals(lastUpdate, product.lastUpdate) &&
+                Objects.equals(productArticles, product.productArticles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, lastUpdate, productArticles);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {

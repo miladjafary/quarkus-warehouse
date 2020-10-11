@@ -14,6 +14,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ProductService {
@@ -53,7 +54,7 @@ public class ProductService {
     }
 
     private void saveProductArticles(List<ProductArticleDto> productArticleDtoList, Product product) {
-        productArticleDtoList.forEach(productArticleDto-> {
+        productArticleDtoList.forEach(productArticleDto -> {
             ProductArticle productArticle = ProductArticle.builder()
                     .amount(productArticleDto.getAmount())
                     .article(findArticle(productArticleDto.getArticleId()))
@@ -67,4 +68,27 @@ public class ProductService {
     private Article findArticle(String articleId) {
         return articleService.findById(Long.valueOf(articleId));
     }
+
+    public List<ProductDto> findAllAvailableProducts() {
+        List<Product> products = productRepository.listAll();
+        return products.stream()
+                .map(this::convertToProductDto)
+                .collect(Collectors.toList());
+    }
+
+    private ProductDto convertToProductDto(Product product) {
+        List<ProductArticleDto> productArticleDtoList = product.getProductArticles()
+                .stream()
+                .map(productArticle -> ProductArticleDto.builder()
+                        .productArticle(productArticle)
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        return ProductDto.builder()
+                .name(product.getName())
+                .productArticles(productArticleDtoList)
+                .build();
+    }
+
 }
