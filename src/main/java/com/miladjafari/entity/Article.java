@@ -1,5 +1,7 @@
 package com.miladjafari.entity;
 
+import com.miladjafari.dto.ArticleDto;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -84,6 +86,14 @@ public class Article {
 
         public Builder lastUpdate(String dateString) {
             instance.lastUpdate = LocalDateTime.parse(dateString);
+            return this;
+        }
+
+        public Builder articleDto(ArticleDto articleDto) {
+            instance.name = articleDto.getName();
+            instance.id = Long.valueOf(articleDto.getId());
+            instance.stock = Integer.valueOf(articleDto.getStock());
+
             return this;
         }
 
