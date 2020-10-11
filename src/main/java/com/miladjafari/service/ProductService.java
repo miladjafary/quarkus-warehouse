@@ -86,9 +86,36 @@ public class ProductService {
                 .collect(Collectors.toList());
 
         return ProductDto.builder()
+                .id(product.getId())
                 .name(product.getName())
                 .productArticles(productArticleDtoList)
                 .build();
+    }
+
+    @Transactional
+    public ServiceResponseDto sell(String productId) {
+        ServiceResponseDto.Builder responseBuilder = ServiceResponseDto.builder();
+
+        List<ValidationErrorDto> errors = productValidator.validate(productId);
+        if (errors.isEmpty()) {
+            Product product = productRepository.findById(Long.valueOf(productId));
+            supplyArticles(product.getProductArticles());
+
+            responseBuilder.ok();
+        } else {
+            responseBuilder.badRequest().errors(errors);
+        }
+
+        return responseBuilder.build();
+    }
+
+    private void supplyArticles(List<ProductArticle> productArticles) {
+        productArticles.forEach(productArticle -> {
+            Article article = productArticle.getArticle();
+            Integer requiredArticle = productArticle.getAmount();
+
+            articleService.reduceStock(article, requiredArticle);
+        });
     }
 
 }
