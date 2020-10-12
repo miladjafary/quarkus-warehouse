@@ -55,7 +55,7 @@ that format is followed by the following object:
 ]
 ```
 
-###Error Object Example:
+Error Object Example:
 ---
 
 ```
