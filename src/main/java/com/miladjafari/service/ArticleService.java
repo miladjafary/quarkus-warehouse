@@ -87,7 +87,7 @@ public class ArticleService {
         Integer inStock = article.getStock();
 
         int remainInStock = inStock - requiredArticle;
-        if (remainInStock > 0) {
+        if (remainInStock >= 0) {
             article.setStock(remainInStock);
             articleRepository.persist(article);
         }

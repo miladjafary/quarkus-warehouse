@@ -14,6 +14,9 @@ public class ProductArticleDto {
     @Pattern(regexp = "[0-9]+", message = "art_id must be only digits")
     private String articleId;
 
+    @JsonbProperty("article_name")
+    private String articleName="";
+
     @JsonbProperty("amount_of")
     @NotBlank(message = "amount_of is required")
     @Pattern(regexp = "[0-9]+", message = "amount_of must be only digits")
@@ -31,6 +34,14 @@ public class ProductArticleDto {
 
     public void setArticleId(String articleId) {
         this.articleId = articleId;
+    }
+
+    public String getArticleName() {
+        return articleName;
+    }
+
+    public void setArticleName(String articleName) {
+        this.articleName = articleName;
     }
 
     public String getAmount() {
@@ -63,6 +74,7 @@ public class ProductArticleDto {
         if (o == null || getClass() != o.getClass()) return false;
         ProductArticleDto that = (ProductArticleDto) o;
         return Objects.equals(articleId, that.articleId) &&
+                Objects.equals(articleName, that.articleName) &&
                 Objects.equals(amount, that.amount) &&
                 Objects.equals(inStock, that.inStock) &&
                 Objects.equals(availableArticleInStock, that.availableArticleInStock);
@@ -70,7 +82,7 @@ public class ProductArticleDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(articleId, amount, inStock, availableArticleInStock);
+        return Objects.hash(articleId, articleName, amount, inStock, availableArticleInStock);
     }
 
     public static Builder builder() {
@@ -105,6 +117,7 @@ public class ProductArticleDto {
             articleId(productArticle.getArticle().getId());
             amount(productArticle.getAmount());
 
+            instance.articleName = productArticle.getArticle().getName();
             instance.inStock = productArticle.getArticle().getStock();
             instance.availableArticleInStock = getAmountOfAvailableArticleInStock(productArticle);
 

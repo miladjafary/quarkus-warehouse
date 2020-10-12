@@ -91,6 +91,9 @@
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus-plugin.version}</version>
+                <configuration>
+                    <finalName>quarkus-warehouse</finalName>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
