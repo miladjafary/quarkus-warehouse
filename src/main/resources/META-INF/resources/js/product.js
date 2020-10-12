@@ -6,12 +6,18 @@ let productPage = {
         $("#introPage").removeClass("d-none");
         $("#introPage").addClass("d-block");
     },
-    renderProducts: function (products) {
+    loadArticles: function () {
         let _this = this;
-        $("#productsContainer").html("");
-        products.forEach(function (product) {
-            _this.renderProductElement(product);
-        })
+        $.ajax({
+            url: "/article/list",
+            success: function (articles) {
+                if (articles.length === 0) {
+                    $("#articlesContainer").html("<h5 class=\"col-md-12\">There is not any article in warehouse!</h5>")
+                } else {
+                    _this.renderArticles(articles)
+                }
+            }
+        });
     },
     loadProducts: function () {
         let _this = this;
@@ -35,6 +41,7 @@ let productPage = {
             type: 'PUT',
             success: function (result) {
                 _this.loadProducts();
+                _this.loadArticles();
                 _this.showSuccessMessage("Product successfully has been sold!")
             },
             error: function (errorObject) {
@@ -45,7 +52,7 @@ let productPage = {
             }
         });
     },
-    showSuccessMessage: function (message){
+    showSuccessMessage: function (message) {
         this.showAlertContainer();
         let successMessageElement = `
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -90,48 +97,87 @@ let productPage = {
         $("#alertContainer").remove("d-block");
         $("#alertContainer").addClass("d-none");
     },
-    renderProductElement: function (product) {
+    renderProducts: function (products) {
+        let _this = this;
+        $("#productsContainer").html("");
+        products.forEach(function (product) {
+            _this.renderProduct(product);
+        })
+    },
+    renderProduct: function (product) {
         let _this = this;
         let productId = product.id;
         let productName = product.name;
         let quantity = product.quantity;
         let articles = "";
         product.contain_articles.forEach(function (productArticle) {
-            articles += _this.createArticle(productArticle);
+            articles += _this.createProductArticle(productArticle);
         });
 
-        let productElement = `<div class="col-sm-3 ">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">${productName}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Articles</h6>
-                </div>
-                <ul class="list-group list-group-flush">${articles}</ul>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="#" class="btn btn-primary" onclick="productPage.sellProduct(${productId});">Sell</a>
-                        <a href="#" class="btn btn-primary">Quantity: ${quantity}</a>
+        let productElement = `
+            <div class="col-sm-3 ">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">${productName}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Articles</h6>
+                    </div>
+                    <ul class="list-group list-group-flush">${articles}</ul>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="#" class="btn btn-primary" onclick="productPage.sellProduct(${productId});">Sell</a>
+                            <a href="#" class="btn btn-primary">Quantity: ${quantity}</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>`;
+        `;
 
         $("#productsContainer").append(productElement);
     },
-
-    createArticle: function (productArticle) {
+    createProductArticle: function (productArticle) {
         let articleName = productArticle.article_name;
         let articleAmount = productArticle.amount_of;
+        let available = productArticle.available_article_in_stock;
+        let stock = productArticle.in_stock;
+        let badgeStyle=  available===0 ? "badge-danger" :"badge-success";
         return `
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 ${articleName}
-                <span class="badge badge-primary badge-pill">${articleAmount}</span>
+                <span class="badge ${badgeStyle}">required:${articleAmount} | stock:${stock}</span>                           
             </li>
         `;
+    },
+    renderArticles: function (articles) {
+        let _this = this;
+        $("#articlesContainer").html("");
+        articles.forEach(function (article) {
+            articles += _this.renderArticle(article);
+        });
+    },
+    renderArticle: function (article) {
+        let name = article.name;
+        let stock = article.stock;
+
+        let articleElement = `
+            <div class="col-sm-3">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title ">${name}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted d-flex justify-content-between align-items-center">
+                            In Stock
+                            <span class="badge badge-primary badge-pill">${stock}</span>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $("#articlesContainer").append(articleElement);
     }
 };
 
 
 $(function () {
     productPage.loadProducts();
+    productPage.loadArticles();
 })
